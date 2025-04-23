@@ -1,3 +1,5 @@
+import sys
+sys.path.append("D:\postgraduate\LLM Engineer\RAG\RAG-Challenge-2\src")
 import json
 import tiktoken
 from pathlib import Path

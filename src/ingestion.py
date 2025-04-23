@@ -3,7 +3,10 @@ import json
 import pickle
 from typing import List, Union
 from pathlib import Path
+
+from langchain.retrievers import bm25
 from tqdm import tqdm
+
 
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -54,7 +57,7 @@ class VectorDBIngestor:
         self.llm = self._set_up_llm()
 
     def _set_up_llm(self):
-        load_dotenv()
+        load_dotenv(".env")
         llm = OpenAI(
             api_key=os.getenv("OPENAI_API_KEY"),
             timeout=None,
@@ -82,14 +85,14 @@ class VectorDBIngestor:
     def _create_vector_db(self, embeddings: List[float]):
         embeddings_array = np.array(embeddings, dtype=np.float32)
         dimension = len(embeddings[0])
-        index = faiss.IndexFlatIP(dimension)  # Cosine distance
+        index = faiss.IndexFlatIP(dimension)  # Cosine distance(相似度检索任务)
         index.add(embeddings_array)
         return index
     
     def _process_report(self, report: dict):
         text_chunks = [chunk['text'] for chunk in report['content']['chunks']]
         embeddings = self._get_embeddings(text_chunks)
-        index = self._create_vector_db(embeddings)
+        index = self._create_vector_db(embeddings)  # 对于报告写入向量数据库进行索引标注
         return index
 
     def process_reports(self, all_reports_dir: Path, output_dir: Path):
@@ -99,9 +102,9 @@ class VectorDBIngestor:
         for report_path in tqdm(all_report_paths, desc="Processing reports"):
             with open(report_path, 'r', encoding='utf-8') as file:
                 report_data = json.load(file)
-            index = self._process_report(report_data)
+            index = self._process_report(report_data) # 调用上述函数对于所有的json格式文件进行索引
             sha1_name = report_data["metainfo"]["sha1_name"]
             faiss_file_path = output_dir / f"{sha1_name}.faiss"
-            faiss.write_index(index, str(faiss_file_path))
+            faiss.write_index(index, str(faiss_file_path))  # 将处理后的向量文件写入faiss数据库
 
         print(f"Processed {len(all_report_paths)} reports")

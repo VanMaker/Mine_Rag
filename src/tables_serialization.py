@@ -1,3 +1,5 @@
+import sys
+sys.path.append("D:\postgraduate\LLM Engineer\RAG\RAG-Challenge-2\src")
 import os
 import json
 import asyncio

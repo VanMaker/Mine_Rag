@@ -18,7 +18,7 @@ To run the system on this dataset:
 
    ### Required for Question Answering
    - `databases` ([google drive](https://drive.google.com/file/d/1mp-hYhMAit4rdi7RURuIsM33zbXq1nQJ/view?usp=sharing))
-     - Contains all the processed data needed for running question answering pipeline
+     ****- Contains all the processed data needed for running question answering pipeline****
 
    ### Optional Files
    - `pdf_reports` ([google drive](https://drive.google.com/file/d/1MvcN_-KpI-9nS4hDFAcPxFU2lRmwMP7M/view?usp=sharing))

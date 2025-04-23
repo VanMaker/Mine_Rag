@@ -36,6 +36,29 @@ def serialize_tables(max_workers):
     pipeline.serialize_tables(max_workers=max_workers)
 
 @cli.command()
+@click.option('--mine-name', default="Cu",help="Name of the mine")
+@click.option('--max-workers', default=10, help='Number of workers for table serialization')
+# @click.option('--type-of-reserve',default="all" ,help="The type of the number of the following mine's reserves")
+def extracting_reserves(mine_name, max_workers):
+    root_path = Path.cwd()
+    pipeline = Pipeline(root_path)
+    click.echo(f"Extracting reserves for specialized (mine={mine_name})")
+    pipeline.serialize_tables(max_workers=max_workers)
+    # pipeline._convert_3_to_csv_if_needed()
+    # 调用上述表格序列化函数提取表格数据并保存
+
+    # 加载经处理后的json数据文件
+
+    # 对chunked后的表格即json数据进行再检索
+    pipeline.extract_values(json_path,mine_name)
+
+
+    # 最终结果返回并保存到一个新的json数据文件中
+
+
+
+
+@cli.command()
 @click.option('--config', type=click.Choice(['ser_tab', 'no_ser_tab']), default='no_ser_tab', help='Configuration preset to use')
 def process_reports(config):
     """Process parsed reports through the pipeline stages."""
@@ -46,8 +69,9 @@ def process_reports(config):
     click.echo(f"Processing parsed reports (config={config})...")
     pipeline.process_parsed_reports()
 
+
 @cli.command()
-@click.option('--config', type=click.Choice(['base', 'pdr', 'max', 'max_no_ser_tab', 'max_nst_o3m', 'max_st_o3m', 'ibm_llama70b', 'ibm_llama8b', 'gemini_thinking']), default='base', help='Configuration preset to use')
+@click.option('--config', type=click.Choice(['base', 'pdr', 'max', 'max_no_ser_tab', 'max_nst_o3m', 'max_st_o3m', 'ibm_llama70b', 'ibm_llama8b', 'gemini_thinking', 'deepseek-chat']), default='base', help='Configuration preset to use')
 def process_questions(config):
     """Process questions using the pipeline."""
     root_path = Path.cwd()
@@ -56,6 +80,7 @@ def process_questions(config):
     
     click.echo(f"Processing questions (config={config})...")
     pipeline.process_questions()
+
 
 if __name__ == '__main__':
     cli()
